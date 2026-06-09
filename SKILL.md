@@ -81,6 +81,34 @@ prerequisites:
 | 私域期 | 6-12 月 | 公众号 → 知识星球（199-299/年） |
 | 叠加期 | 12+ 月 | 系统课（999-1999）+ 咨询 + 招聘引流 |
 
+## 3 层架构（Skill / Notion / 本地 ENV）
+
+```
+┌─────────────────────────────────────────────────────┐
+│  Layer 1 · Skill（公共知识，推远端）                   │
+│  • 工作流 SOP、模板、决策框架                           │
+│  • 推到 GitHub：leonluo2008-ops/account-ops          │
+├─────────────────────────────────────────────────────┤
+│  Layer 2 · Notion（数据 + 视图，云端）                │
+│  • 调研池、选题库、脚本库的真实数据                     │
+│  • 5 子页面 + 3 database                              │
+├─────────────────────────────────────────────────────┤
+│  Layer 3 · 本地 ENV（敏感信息，本地）                  │
+│  • NOTION_API_KEY（真敏感）                          │
+│  • page/database ID（结构性引用）                    │
+│  • .env.local（git 绝看不到，chmod 600）             │
+│  • .env.local.example（推远端的模板）                │
+└─────────────────────────────────────────────────────┘
+```
+
+**关键约束**：
+- ❌ 永不把 `.env.local` 推到远端
+- ❌ 永不把 API key 写进 SKILL.md / README.md
+- ✅ skill 引用 ENV 用 `os.environ.get("NOTION_API_KEY")` 间接读
+- ✅ 加载方式：shell `set -a && source .env.local && set +a` / Python `load_dotenv(".env.local")`
+
+---
+
 ## Notion 工作系统
 
 **父页面**：AI 工程师独立创作者
@@ -96,10 +124,7 @@ prerequisites:
 | 📊 复盘层 | 数据追踪 | 父页面下 |
 | 💰 变现层 | 变现路径规划 | 父页面下 |
 
-**关键字段说明**（避免每次重新查）：
-- 调研池：项目名/URL/来源/分类/Stars/调研状态/加池时间/一句话理由
-- 选题库：选题/对应项目/类型/状态/目标发布日期/B站链接/数据笔记
-- 脚本库：标题/状态/对应选题/视频类型/目标时长/实际时长/脚本正文
+**完整 schema + ID + API 范式 + silent fail 防护** → 见 `references/notion-schema.md`
 
 **状态流转**：
 
@@ -120,7 +145,9 @@ prerequisites:
 ├── "我想复盘/看数据"                 → 走 workflow #4（月度/季度复盘）
 ├── "我想要封面/简介/评论模板"         → 走 templates/ 下对应模板
 ├── "我想看标题怎么写"                → 走 templates/title-formula-library.md
-└── "Notion 怎么填/字段什么意思"        → 走 references/notion-schema.md
+├── "我怎么用 Notion 改数据"           → 走 references/notion-schema.md + templates/notion-row-template.md
+├── "Notion API 报错了"               → 走 references/notion-schema.md §5（端点 + color + language 白名单）
+└── "我想加新 page/database"           → 走 references/notion-schema.md §5.2（silent fail 防护 SOP）
 ```
 
 ## 速查：模板库入口
@@ -145,6 +172,15 @@ prerequisites:
 | 内容矩阵详解 | `references/content-matrix.md` |
 | 平台分发策略 | `references/platform-strategy.md` |
 | 变现节奏规划 | `references/monetization-rhythm.md` |
+| **Notion 完整 schema + API 范式** | `references/notion-schema.md` |
+
+## 速查：本地 ENV
+
+| 字段 | 存放位置 |
+|---|---|
+| 真实值 | `.env.local`（本地，chmod 600，git 绝看不到） |
+| 模板 | `.env.local.example`（推远端） |
+| 字段说明 | `references/notion-schema.md §6` |
 
 ## v1.0.0 已知边界
 

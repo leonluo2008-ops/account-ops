@@ -2,6 +2,7 @@
 __pycache__/
 *.pyc
 *.pyo
+*.pyd
 
 # OS
 .DS_Store
@@ -12,3 +13,16 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# === 关键：本地敏感信息，绝不推远端 ===
+.env
+.env.local
+.env.*.local
+*.local
+# 真实值在 .env.local，推远端的模板在 .env.local.example（不被 .gitignore 排除）
+
+# 临时文件
+/tmp/
+*.tmp
+*.bak
+*.log
