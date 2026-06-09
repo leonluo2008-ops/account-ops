@@ -162,6 +162,7 @@ prerequisites:
 | 标题公式库 | `templates/title-formula-library.md` |
 | 视频大纲模板 | `templates/video-outline-template.md` |
 | 调研池条目模板 | `templates/research-pool-entry-template.md` |
+| **Notion 3 database 添加行模板** | `templates/notion-row-template.md` |
 
 ## 速查：references 库入口
 
