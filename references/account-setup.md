@@ -395,7 +395,7 @@ curl "https://api.tikhub.io/api/v1/bilibili/app/fetch_search_suggest?keyword=AI�
 写完戏剧性人设后，**用这 3 问自检**：
 
 1. **观众能不能 1 句话讲清楚"这是谁的 AI 宠物/员工/徒弟"？**
-   - "二大爷和他的 AI · 铁柱" ✅
+   - "二大爷和铁柱" ✅
    - "AI 提效工程师" ❌
 2. **底层主线（实测/工作流/复盘）有没有保留？**
    - "铁柱评测 XX 工具" ✅
@@ -532,7 +532,7 @@ curl "https://api.tikhub.io/api/v1/bilibili/app/fetch_search_suggest?keyword=AI�
 
 | 平台 | 长度 | 风格 | 模板 |
 |---|---|---|---|
-| **B 站** | 200-500 字 | 中文 + 详细 | `templates/bilibili-intro-template.md` |
+| **B 站** | 70 字（**4 平台统一最简版**） | 中文 + 详细 | `templates/bilibili-intro-template.md` |
 | **YouTube** | 100-200 词 | 英文 + 简洁 | `templates/youtube-intro-template.md` |
 | **抖音/视频号** | 50 字以内 | 中文 + 极简 | 见下方 |
 

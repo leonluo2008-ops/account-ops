@@ -234,7 +234,7 @@
 #### Step 3：写 B 站/YouTube 简介（10 min）
 
 **v2 简介 4 平台分开写**（`templates/bilibili-intro-template.md` 已有 v2 模板）：
-- B 站：200-500 字 + 中文 + 详细信息
+- B 站：70 字（**4 平台统一最简版**） + 中文 + 详细信息
 - YouTube：英文 + 简洁
 - 抖音：短 + 钩子
 - 视频号：公众号式

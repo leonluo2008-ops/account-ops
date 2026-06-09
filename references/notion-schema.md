@@ -140,7 +140,8 @@
 | **创建 database** | `POST /v1/databases` | **不能用** `/v1/data_sources`（会 400 报错） |
 | **查询 / 列数据** | `POST /v1/data_sources/{id}/query` | **不能用** `/v1/databases/{id}/query` |
 | **PATCH property** | `PATCH /v1/data_sources/{id}` | **不能用** `/v1/databases/{id}`（会 silent fail） |
-| **创建 page** | `POST /v1/pages`（parent 用 database_id） | ✅ |
+| **创建 page** | `POST /v1/pages`（**parent 用 `data_source_id`**，不是 `database_id`） | ⚠️ **坑 6（v1.3 实测）**：用 `parent: {type: "data_source_id", data_source_id: $DS}` 才对；用 `parent: {type: "database_id", database_id: $DB}` 在 2025-09-03 API 上能成功但 page 不显示在 database 里 |
+| **批量插入 pages** | 循环 `POST /v1/pages`（**不能**用 `/v1/data_sources/{id}/query` + `pages` 数组） | ⚠️ **坑 7（v1.3 实测）**：`/query` 端点不接受 `pages` 字段 → `body.parent should be not present, instead was...` / `body.pages should be not present` |
 | **追加 children** | `PATCH /v1/blocks/{id}/children`（**不**带 parent） | ✅ |
 | **查询 page** | `GET /v1/pages/{id}` | ✅ |
 | **查询 children** | `GET /v1/blocks/{id}/children` | ✅ |
@@ -216,6 +217,97 @@ elixir, elm, erlang, f#, flow, fortran, gherkin, ...
 **最常用**：`plain text`（写提示词）、`markdown`、`bash`、`python`、`json`、`yaml`。
 
 **绝不能用**：`text`（**这是我们踩过的坑**）。
+
+### 5.5 rich_text annotations 白名单（**v1.3 实测坑 8**）
+
+`rich_text` 元素的 `annotations` 字段**只支持这 4 个 boolean 字段**：
+
+```json
+{
+  "annotations": {
+    "bold": true,
+    "italic": false,
+    "strikethrough": false,
+    "underline": false,
+    "code": false,
+    "color": "default"
+  }
+}
+```
+
+**坑 8（2026-06-09 实测）**：`annotations.font_size` 字段**不存在**于 2025-09-03 API。
+
+```json
+// ❌ 错误
+{"type": "text", "text": {"content": "..."}, "annotations": {"bold": true, "font_size": "large"}}
+
+// 错误响应
+{"object": "error", "status": 400, "code": "validation_error",
+ "message": "body.children[5].callout.rich_text[0].annotations.font_size should be not present, instead was \"large\"."}
+```
+
+**替代方案**：
+- 要"大字"效果 → 用 `heading_1` / `heading_2` / `heading_3` 块级元素（不是 rich_text 内的 annotation）
+- 要"醒目"效果 → 用 `callout` 块 + emoji icon
+- 要"代码"效果 → 用 `annotations.code: true`（这个是合法的）
+- 要"颜色"效果 → 用 `annotations.color: "red|blue|..."`（这个也是合法的，但**必须**是 color 白名单里的值）
+
+**未来 Notion API 升级后**（如果加了 font_size）：可重新启用。**当前 v1.3 阶段必须 strip font_size 字段**。
+
+> **类级方法论**：本坑 + §5.6 Python 字符串坑 都在 `content-account-workflow` skill 的 **P22（parent.data_source_id）+ P23（Python 双引号嵌套）** 收录——本文件是具体业务落地版，content-account-workflow 是 class-level 根。
+
+### 5.6 Python 字符串中英文双引号嵌套 syntax error（**v1.3 实测坑 9**）
+
+**症状**：用 Python 写 Notion blocks 列表时，**中文字符串里嵌套英文双引号** → Python parser 提前关掉字符串 → `SyntaxError: invalid character`。
+
+```python
+# ❌ 错误示例（中文文本里嵌套 " 引号）
+t("铁柱说：「我是 AI 宠物。」和"不太聪明的 AI 员工"——别被这名字骗了")
+#                                                       ^^^^^^^^
+# SyntaxError: invalid character 'X' (U+XXXX)
+
+# ❌ 错误示例（双重嵌套）
+t("B 站搜"二大爷"基本是养生类")
+#         ^^^^^^^^
+# SyntaxError: invalid character
+
+# ✅ 方案 1：用单引号字符串外层（**最简单**）
+t('铁柱说：「我是 AI 宠物。」和"不太聪明的 AI 员工"——别被这名字骗了')
+
+# ✅ 方案 2：用中文「」角引号（**最推荐**——视觉上也更整齐）
+t("铁柱说：「我是 AI 宠物。」和「不太聪明的 AI 员工」——别被这名字骗了")
+
+# ✅ 方案 3：Python f-string + 转义
+t(f"铁柱说：「我是 AI 宠物。」和\"不太聪明的 AI 员工\"——别被这名字骗了")
+
+# ✅ 方案 4：分两段 rich_text
+[t("铁柱说：「我是 AI 宠物。」和"), t("不太聪明的 AI 员工", italic=True), t("——别被这名字骗了")]
+```
+
+**踩坑统计**（v1.3 实测踩了 3 次）：
+- 第一次：t("B 站宠物账号头部都有一只"萌宠 IP 头像"（参考「沙雕阿闰」...）")
+- 第二次：t("调研池待选 —— Cursor 是 4 星对标「程序员鱼皮」的核心工具...4 星对标"从夯到拉"型内容")
+- 第三次：t("白天在公司"零成本"踩素材 → 晚上回家选 1 条录视频")
+
+**3 次都是同一个模式**：中文字符串里嵌入 `"..."` 嵌套。**根治方案**：**所有"中文文本里要引号"的地方，统一用「」**。
+
+**自动化检测**（写完 Python 脚本后跑一遍）：
+
+```python
+# 找出所有 "..." 字符串里的嵌套双引号
+import re
+with open("your_script.py") as f:
+    content = f.read()
+
+# 匹配 "..." 字符串
+for m in re.finditer(r'"[^"]*"[^"]*"', content):
+    print(f"⚠️ 疑似嵌套双引号: 第 {content[:m.start()].count(chr(10))+1} 行")
+    print(f"   {m.group()[:80]}")
+```
+
+**为什么 Notion API 脚本特别容易踩这个**：Notion 写"对人友好的"中文 block（callout/heading/quote）时，**经常要引号突出关键词**（如"4 星对标"、"夯到拉"、用户原话）—— **"..." 嵌套几乎必然**。
+
+**记入铁律**：**写 Notion 脚本时，所有引号用「」不用""**。
 
 ---
 
