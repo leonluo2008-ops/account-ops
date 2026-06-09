@@ -76,7 +76,7 @@
 | 7 | `加进池子时间` | date | ⛔ | ISO 8601 日期 |
 | 8 | `一句话理由` | rich_text | ✅ | 30 秒写"为什么想看" |
 
-### 3.2 🎬 视频选题库（9 properties + 1 title）
+### 3.2 🎬 视频选题库（9 properties + 1 title = 10 个）
 
 | # | Property Name | Type | 必填 | 备注 |
 |---|---|---|---|---|
@@ -91,7 +91,7 @@
 | 9 | `YouTube 链接` | url | ⛔ | 发布后回填 |
 | 10 | `数据笔记` | rich_text | ⛔ | 一句话体感 |
 
-### 3.3 📝 视频脚本库（9 properties + 1 title）
+### 3.3 📝 视频脚本库（9 properties + 1 title = 10 个）
 
 | # | Property Name | Type | 必填 | 备注 |
 |---|---|---|---|---|
@@ -187,6 +187,10 @@ ROW_COUNT=$(curl -s -X POST "https://api.notion.com/v1/data_sources/$DS_ID/query
   python3 -c "import sys, json; print(len(json.load(sys.stdin)['results']))")
 
 echo "DB: $PROP_COUNT properties, $ROW_COUNT rows"
+# 期望值（v1.0.1 校正后）：
+#   调研池: 8 properties + 1 row（gardener-skill）
+#   选题库: 10 properties + 2 rows（D1 自我介绍 + D1 配套素材）
+#   脚本库: 10 properties + 2 rows（D1 完整脚本 + D1 配套素材）
 ```
 
 ### 5.3 color 选项白名单
