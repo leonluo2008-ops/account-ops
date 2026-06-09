@@ -432,10 +432,52 @@ curl -H "Authorization: Bearer $NOTION_API_KEY" ...
 
 ---
 
+## 7.5 重操作红线（必读 · 2026-06-09 踩坑）
+
+**踩坑案例**：让 agent 用 `PATCH /v1/pages/{id}` + `parent.page_id` 把 5 个子页面**移动**到对应 Layer 下。**5 次 API 全 200 但物理 parent 一点没变**。最后用 `link_to_page` 块糊弄（**不是真移动**），白白浪费 30 min + 用户最后让 Notion AI 手动搬完。
+
+### 7.5.1 AI 的能力边界
+
+**AI 适合做**：
+- ✅ **读**：查 page / database 内容、property 值、block
+- ✅ **写少量行**：往调研池/选题库/脚本库 database 加 row
+- ✅ **改文字**：append block / patch block
+- ✅ **查数据**：聚合、统计、导出
+
+**AI 不适合做**：
+- ❌ **移动 page**（`parent.page_id` PATCH 不可靠 · API 200 但 parent 不变）
+- ❌ **改 schema**（database property 的增删 · Notion 2025-09-03 API 行为不稳）
+- ❌ **跨 page 复制整树**（块结构在 API 层容易丢）
+- ❌ **改 page 层级关系**（同上）
+
+### 7.5.2 决策口诀
+
+> **重操作（移动 / 改 schema / 跨页复制）→ 不用 API，交给 Notion AI 或手动拖**
+>
+> **AI 只做**：读内容 + 写 row + 改文字 + 查数据
+
+### 7.5.3 失败模式
+
+| 看到 | 真实原因 |
+|---|---|
+| `PATCH /v1/pages/{id}` 返回 200 | **不等于 parent 改了**——v2025-09-03 移动有静默失败 |
+| `link_to_page` 块加上去 | **不是移动**——只是软引用，物理 parent 仍是原 page |
+| 父页面下看不到子页面 | 移动没真生效 / 用了错的 target ID（row 的 page_id 冒充 page 的 page_id） |
+
+### 7.5.4 正确做法
+
+1. **重操作前先报方案**："我打算 X，因为 Y，等我点头再动"——**不要先做再报告**
+2. **第 1 次 API 失败就停**——**别重复试 5 次**
+3. **移动 page** → **直接让 Notion AI 拖 / 用户手动拖**（最稳 · 几秒搞定）
+4. **如必须用 API** → **先跑 1 个测试**（往目标位置建 1 个空 page，看返回的 parent 是不是真的变了），**再批量操作**
+
+---
+
 ## 8. 维护规则
 
 - **任何新加的 page/database** → **必须更新本文件**（不然下次找不到 ID）
 - **任何 schema 变更**（新增 property、修改 select options）→ **必须更新 §3**
 - **任何新踩的 Notion API 坑** → **必须更新 §5**
+- **任何重操作踩坑**（移动 page / 改 schema / 跨页复制）→ **必须更新 §7.5**
 
 **这是 account-ops skill 的"数据契约"**——和 `SKILL.md` 一样重要。

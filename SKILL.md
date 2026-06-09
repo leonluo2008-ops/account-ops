@@ -1,7 +1,7 @@
 ---
 name: account-ops
 description: "二大爷和铁柱账号运营：AI 工程师的日常工作（GitHub 项目实测 + 画面节奏控制 + 活儿攒成模板 + 翻车复盘）通过「主人 × 宠物」人设包装，做成 B 站/YouTube/抖音/视频号多平台可复用的内容资产。覆盖账号搭建（对标调研+定位+主页装修）、选题决策、脚本撰写、录剪 SOP、封面/简介/评论模板、月度复盘。**触发词：二大爷、铁柱、二大爷的AI、Agent工程师账号、账号搭建、主页装修、起号、找对标、账号定位、账号运营、创作者账号、内容矩阵、选题、实测视频、视频脚本、置顶评论、变现节奏、Notion 账号工作流。**"
-version: 1.6.0
+version: 1.6.2
 author: leonluo2008
 license: MIT
 platforms: [linux, macos]
@@ -126,11 +126,38 @@ prerequisites:
 - ❌ 永不把 `.env.local` 推到远端
 - ❌ 永不把 API key 写进 SKILL.md / README.md
 - ✅ skill 引用 ENV 用 `os.environ.get("NOTION_API_KEY")` 间接读
-- ✅ 加载方式：shell `set -a && source .env.local && set +a` / Python `load_dotenv(".env.local")`
+记入铁律：写 Notion 脚本时，所有引号用「」不用英文双引号。
+
+### 5.7 PATCH page 的 parent 不能移动 page（v1.7 实测坑 10 · silent success）
+
+症状：PATCH /v1/pages/{id} body 改 parent 字段，API 200 但实际没移动。这是 silent success（比 silent fail 更坑）。
+
+防护：每次 PATCH 后必 GET 验证 parent 是否真的改了。验证失败 → 改用 link_to_page 软引用（在目标 Layer 下追加 link_to_page block 引用原 page）：
+
+```python
+requests.patch(f"https://api.notion.com/v1/blocks/{layer_id}/children",
+              json={"children": [{
+                  "object": "block",
+                  "type": "link_to_page",
+                  "link_to_page": {"type": "page_id", "page_id": page_id}
+              }]})
+```
+
+优点：视觉效果规范 + 不丢内容 + 可逆。缺点：物理 parent 仍是原父页面。真正的物理移动只能 Notion UI 手动拖（1 min 5 次）。
+
+v1.7 实战范式：5 个子页面归 Layer（调研/v3 资料/SOP/D1/D2）→ 用 link_to_page 软引用。真要物理移动 → Notion UI 手动拖。
+
+触发场景：账号搭建完成 / 新增 D 脚本 / 调研报告完成 / SOP 沉淀 / 任何想让子页面归 Layer 的需求。
+
+5 Layer 标准化结构（v1.7 铁律 21 配套）：
+
+父页面下 5 个 Layer：战略层（v2 化 + 调研/v3 link_to_page）/ 执行层（v2 化 + 3 数据库 + 踩点 SOP link_to_page）/ 制作层（v2 化 + D 脚本 link_to_page）/ 复盘层（v2 化）/ 变现层（v2 化）。
+
+反模式（v1.6 之前）：D 脚本放父页面下 child_page（应进脚本库 database）/ 调研报告放父页面下（应归战略层 link_to_page）/ Layer 里留 v1 旧内容（应清掉写 v2 化内容）。
 
 ---
 
-## Notion 工作系统
+## 6. ENV 字段说明
 
 **父页面**：AI 工程师独立创作者
 
@@ -201,6 +228,8 @@ prerequisites:
 | **本地 ENV 自检 SOP（v1.1 新增）** | `references/env-self-check.md` |
 | **白天踩点 + 晚上录剪 SOP（v1.4 新增）** | `references/da-time-recording-rhythm.md` |
 | **简介/标题无术语写作 SOP（v1.4 新增）** | `references/copywriting-no-jargon.md` |
+| **4 平台账号资料限制速查表（v1.6.1 新增）** | `references/platform-constraints.md`（含 B 站 70 / 抖音 80 / 视频号 30 / YouTube 1000 字限制 + 自检脚本 + 头像/横幅尺寸 + 实战案例） |
+| **视觉资产风格对齐 SOP（v1.6.2 新增）** | `references/visual-asset-style-guide.md`（头像 = 频道主调 · 3 步走：盘点 → 识别主调 → 写新视觉时显式加风格约束 · 4 自检问 · 实战正反例） |
 
 ## 速查：本地 ENV
 
@@ -321,4 +350,55 @@ curl -s -w "\nHTTP: %{http_code}\n" "https://api.notion.com/v1/users/me" \
     - ✅ **写**完自检 2 问：(1) 字符数 ≤ 平台限制？(2) 字符数 = 复制粘贴到平台后**不**被截断？
     - **触发场景**（一踩即中）：账号装修 / 改昵称 / 改简介 / 多平台同步
     - **修复 SOP** → `references/account-setup.md §2.4 + §2.1`（**B 站字数限制已修正**）
-    - **完整 4 平台字数限制速查表** → `references/platform-constraints.md`（**v1.6 新增**，待创建）
+    - **完整 4 平台字数限制速查表** → `references/platform-constraints.md`（**v1.6.1 已创建**，含 B 站 70 字 / 抖音 80 字 / 视频号 30 字 / YouTube 1000 字 + 自检脚本 + 头像/横幅尺寸 + 实战案例）
+
+19. **用户偏好的简介/昵称风格（v1.6.1 增 · 用户 3 次明确表态）**—— 用户原话：
+    - 「**统一使用比简短的简介，没有多少人愿意看很复杂的简介**」
+    - 「**没必要在名称里加 AI**」
+    - **隐含偏好**：用户喜欢**简短 + 戏剧性 + 不强调 AI 本身**。
+    **铁律**：
+    - ❌ **不写**复杂长简介（**默认 4 平台用同一段 37 字符最简版**）
+    - ❌ **不在昵称里强调 AI**（**B 站实测昵称"二大爷和铁柱"，不是"二大爷 AI 铁柱"**）
+    - ❌ **不**给 3 选 1 / 4 选 1 时罗列 9-12 个选项（**用户已 3 次推翻"专业化"选项**）
+    - ✅ **昵称** ≤ 8 字符最舒服（**B 站 6 字符"二大爷和铁柱" · 已验证**）
+    - ✅ **简介** ≤ 50 字符最舒服（**B 站 37 字符"🐶 养了只 AI 宠物叫铁柱。不太聪明但会用 AI。每周四看 TA 翻车。" · 已验证**）
+    - ✅ **写完自检 1 问**：(1) 我能 1 句话讲清账号干啥的？→ 是 = OK
+    - **触发场景**（一踩即中）：给昵称候选 / 写简介 / 改模板 / 任何"对外文案"
+    - **正例**（v2.1 已落地）：昵称"二大爷和铁柱" / 简介 37 字符
+    - **反例**（v1.0 已废弃）：昵称"二大爷和他的 AI · 铁柱" / 简介 200+ 字符详细版
+
+20. **视觉资产（头像/横幅/封面）必须风格对齐（v1.6.1 增 · 用户实战纠错）**—— 用户原话：「**我感觉你给的横幅背景风格和头像不匹配，请根据头像，重新设计**」。**根因**：v1.0 横幅提示词用了 3D 渲染 + 暖色渐变 + 真人剪影风格，**而 C 版头像是极简矢量 + 黑白蓝 + 几何线条**。**两种风格混搭 = 频道看起来像 2 个账号**。
+    **铁律**：
+    - ❌ **不**给视觉提示词时**不参考已有视觉资产风格**（**头像风格是频道的"主调"**）
+    - ❌ **不**混搭风格（**3D 写实 + 极简矢量 = 割裂** / **暖色 + 冷色 = 割裂** / **真人 + 拟人化 = 割裂**）
+    - ✅ **先盘**频道已有视觉资产（头像 / 之前横幅 / 之前封面）→ **识别主调风格**（配色 + 笔触 + 几何感 + 元素）
+    - ✅ **再写**新视觉提示词时**对齐主调**（配色相同 + 笔触相同 + 元素延续）
+    - ✅ **3 步走**：盘点 → 识别主调 → 写提示词时**显式加风格约束**（"匹配 logo 美学" / "matching the channel's logo aesthetic" / "no gradient, no 3D"）
+    - **触发场景**（一踩即中）：写新横幅提示词 / 写封面提示词 / 设计新视觉元素
+    - **修复 SOP** → `references/visual-asset-style-guide.md`（**v1.6.1 新增**）
+
+21. **生图提示词必须用观众能懂的语言（v1.6.1 增 · 用户实战纠错）**—— 用户原话：「**文字全部用中文，英文人家也看不懂**」。**根因**：v1.0 给的横幅提示词副标题是 "AI Workflow · 4D Control · Real Fails"——3 个英文词，B 站用户根本看不懂（**B 站是中文平台**）。**铁律**：
+    - ❌ **不**在中文平台的提示词里放英文副标题/标语（**YouTube 才用英文**）
+    - ❌ **不**用作者觉得"高级"的英文术语（**"4D Control" / "Workflow" / "Real Fails" 对中文用户= 黑话**）
+    - ✅ **中文平台提示词**：副标题/标语/CTA 全用中文（"实测 · 翻车 · 干活"· 3 词 ≤ 8 字符 · 画面感强）
+    - ✅ **YouTube 提示词**：才用英文版（**YouTube 是英文平台 · 用户秒懂**）
+    - ✅ **写完自检 1 问**：(1) 这个词观众 3 秒能懂吗？→ 跨平台时这个问 2 次（中文平台 + YouTube 各自问）
+    - **触发场景**（一踩即中）：生图提示词 / 视频标题 / 视频简介 / 横幅标语 / CTA 文案
+    - **正例**（v3 已落地）：副标题"**实测 · 翻车 · 干活**"（3 词全中文）
+    - **反例**（v1.0 已废弃）：副标题"**Real Tests · Real Fails · Real Work**"（3 词全英文）
+
+22. **Notion 5 Layer 规范化（v1.7 增 · 2026-06-09 实战沉淀）**—— Notion 工作系统必须 5 Layer + 3 数据库规范存放，**不**让脚本/调研/SOP 散在父页面。**铁律**：
+    - **5 Layer**：战略 / 执行 / 制作 / 复盘 / 变现（**各 Layer 内部 v2 化**，不留 v1 旧内容）
+    - **3 数据库**：调研池 / 选题库 / 脚本库（**所有 D 脚本必须进脚本库** · 不放 child_page）
+    - ❌ **不**让子页面散在父页面（调研报告/v3 资料/D 脚本/SOP 必须**视觉上归到 Layer**）
+    - ❌ **不**在 Layer 里留 v1 旧内容（工程师对工程师/不装不端不娱乐等已废弃）
+    - ✅ **物理移动 vs 软引用**：Notion API 2025-09-03 不能 PATCH page 的 parent 移动 → 用 link_to_page 软引用（**视觉效果规范**）· 真要绝对规范需在 Notion UI 手动拖
+    - ✅ **v1/v2/v3 归档规范**（用户原话：第一版的内容可以完全归档或者删除）：
+        - **归档（archive）= 软删除**，可恢复 · 优先用归档不用 delete
+        - 归档后新建 v2/v3 子页面（**不**在原页改）
+        - 决策痕迹（如 v1/v2 撞名列表）可保留为档案
+    - **触发场景**（一踩即中）：账号搭建完成 / 新增 D 脚本 / 调研报告完成 / SOP 沉淀
+    - **Notion API silent success 坑 10**（**v1.7 必读**）：PATCH page 的 parent 字段**接受但不生效**（200 OK 但实际没移动）→ **每次 PATCH 后必 GET 验证** → **失败就用 link_to_page 软引用**
+    - **完整 5 Layer v2 化模板 + link_to_page 用法 + 脚本库 schema + silent success 防护** → 见 `references/notion-schema.md §5.7`
+
+    - **正例**（2026-06-09）：D1 v1 脚本 archived / 3 选 1 v1+v2 archived / 4 平台素材包 v2 archived / 新建 v3 资料包 / 5 个子页面 link_to_page 到 Layer
