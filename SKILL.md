@@ -1,7 +1,7 @@
 ---
 name: account-ops
 description: "二大爷和他的 AI 宠物铁柱账号运营：把 AI 工程师的日常工作（GitHub 项目实测 + 画面节奏控制 + 活儿攒成模板 + 翻车复盘）通过「主人 × 宠物」人设包装，做成 B 站/YouTube/抖音/视频号多平台可复用的内容资产。覆盖账号搭建（对标调研+定位+主页装修）、选题决策、脚本撰写、录剪 SOP、封面/简介/评论模板、月度复盘。**触发词：二大爷、铁柱、二大爷的AI、Agent工程师账号、账号搭建、主页装修、起号、找对标、账号定位、账号运营、创作者账号、内容矩阵、选题、实测视频、视频脚本、置顶评论、变现节奏、Notion 账号工作流。**"
-version: 1.4.0
+version: 1.5.0
 author: leonluo2008
 license: MIT
 platforms: [linux, macos]
@@ -31,6 +31,7 @@ prerequisites:
 - Notion 账号工作流、调研池、选题库
 - B 站视频、YouTube 同步、抖音剪精华
 - 账号搭建、主页装修、起号、账号主页（v1.1 新增）
+- **白天踩点 / 副业两段式 / 晚上录视频**（v1.4 新增 · 副业专属节奏）
 
 ## 核心定位（v2.0.0 · 2026-06-09 锁定）
 
@@ -58,17 +59,26 @@ prerequisites:
 | **C 整合到工作流** | 每月 1-2 条 | 怎么把好东西塞进 pipeline | 10-15 min |
 | **D 行业观察** | 每月 1 条 | GitHub Trending 周报 / 行业趋势 | 8-10 min |
 
-## 5 大核心工作流（v1.1 = 5 个）
+## 6 大核心工作流（v1.4 = 6 个 · 白天踩点 + 晚上录剪）
 
 | # | 工作流 | 详细 SOP |
 |---|---|---|
+| 0 | **白天踩点**（公司用 · 4 触发） | → `references/da-time-recording-rhythm.md`（**v1.4 新增**，161 行，反面案例 + 正面范式 + 4 触发 + Notion 字段映射 + 节奏建议） |
 | 1 | **选题决策**（调研池 → 选题库） | → `references/workflow-sop.md#1-选题决策` |
-| 2 | **脚本撰写**（选题 → 配音稿） | → `references/workflow-sop.md#2-脚本撰写` |
-| 3 | **多平台发布**（剪辑完 → 4 平台上线） | → `references/workflow-sop.md#3-多平台发布` |
+| 2 | **脚本撰写**（选题 → 配音稿 · 含铁柱/二大爷人设） | → `references/workflow-sop.md#2-脚本撰写` |
+| 3 | **多平台发布**（录剪完 → 4 平台上线 · 录完即发） | → `references/workflow-sop.md#3-多平台发布` |
 | 4 | **月度/季度复盘** | → `references/workflow-sop.md#4-月度季度复盘` |
 | 5 | **账号搭建**（Step 0 调研 → 定位 → 装修 → D1 上线） | → `references/account-setup.md`（**v1.1 新增**，Step 0 必跑对标调研，走 `douyin-ops` skill 的 TikHub API） |
 
-**4 个占位工作流**（v1.1+ 补）：录屏配音、剪辑字幕、互动回复、内容日历
+**v1.4 跨工作流口诀**：
+
+```
+白天踩点（1-2 min/天）→ 调研池留底 → 晚上选题（5 min）→ 写脚本（45 min）→ 录剪发布（1 h）
+   ↓                     ↓                  ↓                  ↓                ↓
+ 截图+1 句话         Notion 调研池        调研池→选题库      铁柱+二大爷配音     当晚即发
+```
+
+**副业铁律**：**白天 0 精力消耗** · **晚上 30-60 min 出一条** · **总周时长 ≈ 1-1.5 小时** · **不要做成主业**
 
 ## 平台分发策略
 
@@ -184,6 +194,8 @@ prerequisites:
 | **账号搭建工作流（v1.1 新增）** | `references/account-setup.md`（**v1.3 大幅扩**——新增 §1.1 戏剧性人格化方法论 + §1.2 v1/v2 决策痕迹保留） |
 | **Notion 完整 schema + API 范式** | `references/notion-schema.md` |
 | **本地 ENV 自检 SOP（v1.1 新增）** | `references/env-self-check.md` |
+| **白天踩点 + 晚上录剪 SOP（v1.4 新增）** | `references/da-time-recording-rhythm.md` |
+| **简介/标题无术语写作 SOP（v1.4 新增）** | `references/copywriting-no-jargon.md` |
 
 ## 速查：本地 ENV
 
