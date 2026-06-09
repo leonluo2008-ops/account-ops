@@ -239,6 +239,63 @@ elixir, elm, erlang, f#, flow, fortran, gherkin, ...
 | `NOTION_DATA_SOURCE_TOPICS_ID` | 选题库 data source |
 | `NOTION_DATA_SOURCE_SCRIPTS_ID` | 脚本库 data source |
 
+### 6.4 dotenv 引号陷阱（v1.2 新增 · 踩坑必看）
+
+**坑 5（2026-06-09 实测）**：`.env.local` 文件里 key **被双引号包裹**：
+
+```bash
+# ❌ 错误（双引号包裹了 value）
+NOTION_API_KEY="ntn_4401623287...RF1Slv8aCF"
+
+# ✅ 正确（无双引号）
+NOTION_API_KEY=ntn_4401623287...RF1Slv8aCF
+```
+
+**症状**：Python `os.environ.get("NOTION_API_KEY")` 拿到**带引号的 52 字符字符串**（真值 50 + 2 个引号）→ 调 Notion API 返 401 → 排查半天找不到原因。
+
+**根因**：很多 dotenv 编辑器/插件**自动加双引号**（尤其复制粘贴时）；用户从某处拷贝时自带引号；某些 IDE 模板默认带引号。
+
+**防护 SOP**（新建/修改 .env.local 后必跑）：
+
+```python
+import os
+from pathlib import Path
+
+env_path = Path(".env.local")
+with open(env_path) as f:
+    for line in f:
+        line = line.strip()
+        if line and not line.startswith("#") and "=" in line:
+            k, v = line.split("=", 1)
+            # 关键：strip 双引号/单引号
+            v = v.strip().strip('"').strip("'")
+            if v != line.split("=", 1)[1].strip():
+                print(f"⚠️ {k}: 检测到引号包裹，已自动 strip")
+            env[k.strip()] = v
+
+# 验证
+api_key = env["NOTION_API_KEY"]
+assert len(api_key) == 50 and not api_key.startswith('"'), f"Key 长度/格式异常: len={len(api_key)}"
+print(f"✅ Key 验证通过: {api_key[:10]}...{api_key[-6:]} (len={len(api_key)})")
+```
+
+**修复方法**（如果已经踩坑）：
+
+```bash
+# 1. 打开 .env.local
+vim .env.local
+
+# 2. 把所有 NOTION_*_KEY 的 value 用引号包起来的去掉引号
+# NOTION_API_KEY="ntn_..."  →  NOTION_API_KEY=ntn_...
+
+# 3. 重跑 env-self-check.md §1 的 2 步快速自检
+```
+
+**对比**：
+- 坑 4（v1.0.1 之前）：key **多打 1 个字符**（51 vs 50）→ 401
+- 坑 5（v1.2 新增）：key **被引号包**（52 vs 50）→ 401
+- 共同点：都是**401 unauthorized** → 走 env-self-check.md §2 的 md5 对比定位
+
 ### 6.3 加载 ENV 的标准方式
 
 **Python 示例**（手动加载，绕开 sandbox 隔离）：

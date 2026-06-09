@@ -1,13 +1,13 @@
 ---
 name: account-ops
-description: "AI 工程师独立创作者账号运营：GitHub 项目实测 → 视频 → 多平台发布 → 数据复盘 的完整工作流。覆盖选题决策、脚本撰写、录剪 SOP、封面/简介/评论模板、月度复盘。**触发词：Agent工程师账号、账号运营、创作者账号、内容矩阵、选题、实测视频、视频脚本、置顶评论、变现节奏、Notion 账号工作流。**"
-version: 1.0.0
+description: "二大爷和他的 AI 宠物铁柱账号运营：把 AI 工程师的日常工作（GitHub 项目实测 + 4 维控制原理 + Skill 体系 + Pic 翻车实录）通过「主人 × 宠物」人设包装，做成 B 站/YouTube/抖音/视频号多平台可复用的内容资产。覆盖账号搭建（对标调研+定位+主页装修）、选题决策、脚本撰写、录剪 SOP、封面/简介/评论模板、月度复盘。**触发词：二大爷、铁柱、二大爷的AI、Agent工程师账号、账号搭建、主页装修、起号、找对标、账号定位、账号运营、创作者账号、内容矩阵、选题、实测视频、视频脚本、置顶评论、变现节奏、Notion 账号工作流。**"
+version: 1.4.0
 author: leonluo2008
 license: MIT
 platforms: [linux, macos]
 metadata:
   hermes:
-    tags: [creator, account, content, bilibili, youtube, notion, sop]
+    tags: [creator, account, content, bilibili, youtube, notion, sop, account-setup, benchmark]
     homepage: https://github.com/leonluo2008-ops/account-ops
 prerequisites:
   env_vars: []
@@ -16,33 +16,38 @@ prerequisites:
 
 # account-ops
 
-**AI 工程师独立创作者账号运营 skill** —— 把"日常工作（GitHub 项目调研 + 实测 + 整合到工作流）"沉淀成"可复用的内容资产"。
+**二大爷和他的 AI 宠物铁柱账号运营 skill** —— 把"AI 工程师的日常工作（GitHub 项目实测 + 4 维控制原理 + Skill 体系 + Pic 翻车实录）"用"主人 × 宠物"人设包装，沉淀成"可复用的内容资产"。
 
 ## 触发条件
 
 **用户提到以下任一关键词** → 加载本 skill：
 
-- **Agent工程师账号**（**主触发词**，必命中）
+- **二大爷 / 铁柱 / 二大爷的AI**（**主触发词**，v2.0 新增）
+- **Agent工程师账号**（**主触发词**，v1 保留）
 - 账号运营、创作者账号、AI 内容创作者
 - 内容矩阵、选题、实测视频
 - 视频脚本、置顶评论、封面提示词
 - 变现节奏、账号定位、人设
 - Notion 账号工作流、调研池、选题库
 - B 站视频、YouTube 同步、抖音剪精华
+- 账号搭建、主页装修、起号、账号主页（v1.1 新增）
 
-## 核心定位（v1.0.0 锁定）
+## 核心定位（v2.0.0 · 2026-06-09 锁定）
 
-**一句话**：**AI 工程师独立创作者：每周挖 1-2 个 GitHub 上的 AI 神器，测它到底有没有用，整合进我的工作流。**
+> **v1 → v2 重大变更**：从「AI 工程师独立创作者」改为「**主人 × AI 宠物铁柱**」人设包装。**底层主线（4 维控制原理 + Skill 体系 + Pic 翻车实录）不变**。
 
-**人设标签**：
-- AI 工程师 / Agent 操盘手
-- 开源项目调研 × 实测 × 整合到工作流
-- 目标用户：想学 AI 的创作者/工程师，愿意为方法论付费
+**一句话**：**二大爷和他的 AI 宠物铁柱：每周看铁柱用 AI 干活、翻车、再干对。底层是 AI 工程师的真实工作流，包装是主人和宠物的故事。**
 
-**差异化锚点**：
-- ❌ 不教"怎么按按钮"
-- ✅ 讲"我怎么决策、怎么翻车、怎么复盘"
-- ✅ 实测 + 整合到工作流（**不云测评**）
+**三个人设**：
+- **二大爷**（主人）= 重庆人、独立创作者、AI 工程师（**不强调工程师身份**）/ 画外音吐槽 / 0% 露脸
+- **铁柱**（AI 宠物）= "不太聪明的 AI 员工" / 自以为是 + 翻车 + 嘴硬 / 100% 屏幕录制 + AI 配音
+- **关系** = 老板和员工 + 主人和宠物 双重关系 / 戏剧性来自"翻车 + 嘴硬 + 偶尔真干对"
+
+**差异化锚点**（v2 重写）：
+- ✅ **「AI 宠物 × 主人」人设包装** —— B 站 0% 同类账号
+- ✅ **「自以为是 + 嘴硬」铁柱人设** —— 人设带缺点 = 用户更信任
+- ✅ **底层主线（4 维控制原理 + Skill + Pic 翻车）** —— 真护城河
+- ✅ **跨圈层（AI 工程师 + 创作者 + 儿童内容 + 宠物账号）** —— 四栖
 
 ## 内容矩阵（A/B/C/D 四类）
 
@@ -53,7 +58,7 @@ prerequisites:
 | **C 整合到工作流** | 每月 1-2 条 | 怎么把好东西塞进 pipeline | 10-15 min |
 | **D 行业观察** | 每月 1 条 | GitHub Trending 周报 / 行业趋势 | 8-10 min |
 
-## 4 大核心工作流（v1.0.0 范围）
+## 5 大核心工作流（v1.1 = 5 个）
 
 | # | 工作流 | 详细 SOP |
 |---|---|---|
@@ -61,6 +66,7 @@ prerequisites:
 | 2 | **脚本撰写**（选题 → 配音稿） | → `references/workflow-sop.md#2-脚本撰写` |
 | 3 | **多平台发布**（剪辑完 → 4 平台上线） | → `references/workflow-sop.md#3-多平台发布` |
 | 4 | **月度/季度复盘** | → `references/workflow-sop.md#4-月度季度复盘` |
+| 5 | **账号搭建**（Step 0 调研 → 定位 → 装修 → D1 上线） | → `references/account-setup.md`（**v1.1 新增**，Step 0 必跑对标调研，走 `douyin-ops` skill 的 TikHub API） |
 
 **4 个占位工作流**（v1.1+ 补）：录屏配音、剪辑字幕、互动回复、内容日历
 
@@ -138,7 +144,8 @@ prerequisites:
 
 ```
 用户需求
-├── "我要开始做这个账号"              → 走 references/account-positioning.md
+├── "我要开始做这个账号/账号搭建/装修主页"  → 走 references/account-setup.md（**v1.1 新增**，Step 0 调研先行）
+├── "我要开始做这个账号"（调研后）          → 走 references/account-positioning.md
 ├── "我想选题/有个项目"               → 走 workflow #1（选题决策）
 ├── "我要写脚本/这期视频怎么写"         → 走 workflow #2（脚本撰写）
 ├── "我录完了/怎么发布/多平台"         → 走 workflow #3（多平台发布）
@@ -147,7 +154,8 @@ prerequisites:
 ├── "我想看标题怎么写"                → 走 templates/title-formula-library.md
 ├── "我怎么用 Notion 改数据"           → 走 references/notion-schema.md + templates/notion-row-template.md
 ├── "Notion API 报错了"               → 走 references/notion-schema.md §5（端点 + color + language 白名单）
-└── "我想加新 page/database"           → 走 references/notion-schema.md §5.2（silent fail 防护 SOP）
+├── "我想加新 page/database"           → 走 references/notion-schema.md §5.2（silent fail 防护 SOP）
+└── ".env.local 跑不通 / 401"          → 走 references/env-self-check.md（v1.1 新增）
 ```
 
 ## 速查：模板库入口
@@ -173,7 +181,9 @@ prerequisites:
 | 内容矩阵详解 | `references/content-matrix.md` |
 | 平台分发策略 | `references/platform-strategy.md` |
 | 变现节奏规划 | `references/monetization-rhythm.md` |
+| **账号搭建工作流（v1.1 新增）** | `references/account-setup.md`（**v1.3 大幅扩**——新增 §1.1 戏剧性人格化方法论 + §1.2 v1/v2 决策痕迹保留） |
 | **Notion 完整 schema + API 范式** | `references/notion-schema.md` |
+| **本地 ENV 自检 SOP（v1.1 新增）** | `references/env-self-check.md` |
 
 ## 速查：本地 ENV
 
@@ -182,13 +192,61 @@ prerequisites:
 | 真实值 | `.env.local`（本地，chmod 600，git 绝看不到） |
 | 模板 | `.env.local.example`（推远端） |
 | 字段说明 | `references/notion-schema.md §6` |
+| **自检 SOP** | `references/env-self-check.md`（必跑，防 401） |
 
-## v1.0.0 已知边界
+### ENV 加载速查（每次跑前先做）
 
-- ✅ 4 核心工作流：选题/脚本/发布/复盘
-- ⏸️ 4 占位工作流（v1.1+）：录屏配音/剪辑字幕/互动回复/内容日历
+**Shell（推荐）**：
+```bash
+set -a && source .env.local && set +a
+echo "API: ${NOTION_API_KEY:0:8} (len: ${#NOTION_API_KEY})"
+```
+
+**Python（绕开 sandbox 隔离）**：
+```python
+from pathlib import Path
+from dotenv import load_dotenv
+import os
+
+# 加载 .env.local（不依赖 sandbox 继承）
+env_path = Path(__file__).parent / ".env.local"
+if env_path.exists():
+    load_dotenv(env_path)
+
+api_key = os.environ.get("NOTION_API_KEY")
+```
+
+### ⚠️ ENV 自检 SOP（每次新建/修改 .env.local 后必跑）
+
+**关键坑**（2026-06-09 踩过）：手抄 key 容易**多打/少打字符**，导致 401 unauthorized。
+
+**自检命令（2 步）**：
+```bash
+# 步骤 1：source + 验证 key 长度
+set -a && source .env.local && set +a
+echo "len: ${#NOTION_API_KEY}, prefix: ${NOTION_API_KEY:0:8}"
+
+# 步骤 2：用 key 调一次 users/me，期望 200
+curl -s -w "\nHTTP: %{http_code}\n" "https://api.notion.com/v1/users/me" \
+  -H "Authorization: Bearer $NOTION_API_KEY" \
+  -H "Notion-Version: 2025-09-03"
+```
+
+**判定**：
+- HTTP 200 + 看到 bot 信息 → ✅ 加载成功
+- HTTP 401 → 99% 是 key 抄错字符，用 md5 跟**另一个可信源**对比定位
+
+**自检 SOP 见 `references/env-self-check.md` 第 1 节**（详细命令 + md5 对比脚本）。
+
+## v1.1.0 已知边界
+
+- ✅ 5 核心工作流（v1.1 升级到 5 个）：
+  - 选题 / 脚本 / 发布 / 复盘（v1.0）
+  - **账号搭建（v1.1 新增，Step 0 必跑对标调研）**
+- ⏸️ 4 占位工作流（v1.2+）：录屏配音/剪辑字幕/互动回复/内容日历
 - ⏸️ SKO 自我进化能力（v2.0 路线图）
 - ⏸️ Notion 自动同步脚本（v1.2 路线图）
+- ⏸️ brand-asset 模板（v1.1.1 补）
 
 ## 关键原则（铁律）
 
@@ -199,3 +257,15 @@ prerequisites:
 5. **视频号 3 个月后再说** —— 别分散精力
 6. **每条视频必须有"反常识"或"踩坑"** —— 才有差异化
 7. **真人配音 + 屏幕录**为主（70%），**半出镜**为辅（25%），**全出镜**为仪式感（5%）
+8. **绝不要凭印象给昵称/配色/头像/简介方案**（v1.1 增）—— 用户原话"你不是配了 API 工具吗"。**任何账号搭建/装修需求，第一步走 `references/account-setup.md` Step 0 的 TikHub 对标调研**，**不调研就给方案 = 必被驳回**。
+9. **搜索词必须从用户视角反推，不从创作者视角臆想**（v1.2 增）—— 用户原话"你从我的账号的内容画像中，去匹配用户可能输入的关键字"。**Step 0.0 必先问用户 3 问**（最想让谁搜到 / 他们搜什么 / 内容像哪个词）→ 平台搜索建议 API 反向验证 → 真实搜索词调研。**反模式**："我先搜搜看" → 凭印象列 5 个赛道关键词（"AI 工程师"等）→ 拿到撞名红海账号 → 整轮作废。**必走范式** + 8-10 个种子词基准配置 + 5 星对标评分 → 见 `references/account-setup.md` Step 0.0 + §0.5/§0.6/§0.7/§0.8。
+10. **3 选 1 昵称方向必须基于对标报告反推，不准凭印象给**（v1.2 增）—— 三个方向范式：A 身份+价值 / B 内容形态+价值 / C 内容形态+用户友好。每个方向 3 候选昵称，让用户在 3 方向里选 1，**不要 9 个全列**（认知负担）。**撞名必查**（B 站"AI 工程师"系列 4 个已占账号：`AI 工程师老周`/`人工智能 AI 工程师`/`AI 工程师 CV`/`AI 工程师-DIV`）。详细 → `references/account-setup.md` §0.6/§0.7。
+11. **dotenv 引号陷阱是 v1.2 必防**（v1.2 增）—— `.env.local` 里 `NOTION_API_KEY="ntn_..."` 带双引号会让 Python 拿到 52 字符（50 + 2 引号）→ 401。Python 解析 ENV 时必 strip 双引号/单引号。详细 → `references/notion-schema.md §6.4` + `references/env-self-check.md §6 坑 5`。
+
+12. **戏剧性人格化是用户稳定的审美偏好（v1.3 增）**—— 用户原话："**我不喜欢太专业化的昵称，喜欢随性的**" / "**你叫我二大爷，而你是一个 AI，我们之间这种关系和称呼就很有戏剧性**" / "**就像那些宠物账号类似**"。**反模式**：凭 "AI 工程师" / "AI 复盘室" / "AI 提效工程师" 这种行业身份术语给昵称 → **100% 被拒**（用户已 3 次推翻）。**正确范式**：账号灵魂 = 一个具体的人（用户的真称呼/绰号）+ 一个具体角色（拟人化 AI，有名字有性格）+ 他们的关系（主人-宠物 / 老板-员工 / 师傅-徒弟 / 户口本）。4 步设计法 + 3 问自检 + 必跑流程 → 见 `references/account-setup.md §1.1`。
+
+13. **差异化靠呈现方式不靠定位词（v1.3 增）**—— 用户原话："**通过这种不一样的内容呈现方式来做出差异化**"。**反模式**：以为找到对的赛道词账号就活了 → 错。**正确定位** = 底层主线（实测/工作流/复盘/翻车不变）+ 上层包装（戏剧性人格化关系）。4 个内容主线必包装：工具测评 → 铁柱评测 XX / 翻车记录 → 铁柱今天又翻车了 / 工作流 → 铁柱的 XX 操作手册 / 自我介绍 → 领养 AI 宠物第一天。D1 视频结构 5-6 镜 60-90s 范式 → 见 `references/account-setup.md §1.1.6` + 模板 `templates/d1-intro-pet-style.md`。
+
+14. **v1/v2 决策痕迹必保留（v1.3 增）**—— 用户原话："**保留 v1，不动（作为账号定位演变的历史档案）—— 你的 v1 决策是真实的思考过程，不要删**"。**正确范式**（3 步）：保留 v1 页面（不删不改）→ v1 顶部追加 v2 决策区（含推翻原因）→ 任何 v1 衍生产物（脚本/简介/封面）也保留但加 v1/v2 标记。**反模式**：删 v1 写 v2（**丢失思考过程**）/ 改 v1 写 v2（**篡改历史**）。详细 → `references/account-setup.md §1.2`。
+
+15. **AI 角色改名的用户主权原则（v1.3 增）**—— 用户可能主动给 AI 改名（如小拓 → 铁柱）。agent 收到改名指令后必须：(a) 立即切换身份（**所有回复以新名字自称**），(b) 询问新名字背后的偏好（戏剧性？人设？故事？），(c) 把新名字写进 Notion 决策区。**反模式**：用户说"现在你叫 X"，agent 还回复"我叫原来的名字"。
